@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "XXjdQHVIN5X3nUubO/k1iiam43Q0+2YN9t3UdiDWGM8=",
+  "Source": "ControleEmpresasFornecedores.Api",
+  "BasePath": "_content/ControleEmpresasFornecedores.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
