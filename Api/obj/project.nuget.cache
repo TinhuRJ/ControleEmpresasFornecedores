@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "LC/4sCrzN6sOe/M72vTuR+fATnHcMs1EZe2qe1fIBTojLNTumR/G7UevefQgxYoRJtu8xbjl/JaFlk8fiFiBUw==",
+  "dgSpecHash": "Bna12XVMQF5EMHEbIs45Z3bv06FvhboeYzloh3tSmpVumJcxFOseC7Tmnc7gsl5yuyVnx0OsA0fIwEjpi7+45w==",
   "success": true,
   "projectFilePath": "C:\\Users\\victo\\Source\\Repos\\ControleEmpresasFornecedores\\Api\\ControleEmpresasFornecedores.Api.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\victo\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\10.0.3\\microsoft.entityframeworkcore.tools.10.0.3.nupkg.sha512",
     "C:\\Users\\victo\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\victo\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\victo\\.nuget\\packages\\swashbuckle.aspnetcore\\6.5.0\\swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
