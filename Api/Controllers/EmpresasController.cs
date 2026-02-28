@@ -58,4 +58,26 @@ public class EmpresasController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPost("VincularFornecedores")]
+    public async Task<IActionResult> VincularFornecedores(VincularFornecedoresDto dto)
+    {
+        var result = await _service.VincularFornecedoresAsync(dto.EmpresaId, dto.FornecedoresIds);
+
+        if(!result)
+            return NotFound("Empresa não encontrada.");
+
+        return NoContent();
+    }
+
+    [HttpGet("GetFornecedoresIdsByEmpresa/{empresaId}")]
+    public async Task<ActionResult<List<int>>> GetFornecedoresIdsByEmpresa(int empresaId)
+    {
+        var fornecedoresIds = await _service.GetFornecedoresIdsByEmpresaAsync(empresaId);
+
+        if(fornecedoresIds == null || !fornecedoresIds.Any())
+            return NotFound("Nenhum fornecedor vinculado.");
+
+        return Ok(fornecedoresIds);
+    }
 }

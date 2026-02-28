@@ -9,4 +9,6 @@ public interface IEmpresaService
     Task<EmpresaResponseDto> CreateAsync(EmpresaCreateDto dto);
     Task<bool> UpdateAsync(int id, EmpresaCreateDto dto);
     Task<bool> DeleteAsync(int id);
+    Task<bool> VincularFornecedoresAsync(int empresaId, List<int> fornecedoresIds);
+    Task<List<int>> GetFornecedoresIdsByEmpresaAsync(int empresaId);
 }

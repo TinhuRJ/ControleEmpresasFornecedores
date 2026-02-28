@@ -54,6 +54,11 @@ public class EmpresaService : IEmpresaService
             Estado = string.Empty // vamos preencher depois via CEP
         };
 
+        var cnpjExiste = await _context.Empresas.AnyAsync(e => e.Cnpj == dto.Cnpj);
+
+        if(cnpjExiste)
+            throw new Exception("Já existe uma empresa com este CNPJ.");
+
         _context.Empresas.Add(empresa);
         await _context.SaveChangesAsync();
 
@@ -73,6 +78,15 @@ public class EmpresaService : IEmpresaService
 
         if(empresa == null) return false;
 
+        if(empresa.Cnpj != dto.Cnpj)
+        {
+            var cnpjExiste = await _context.Empresas
+                .AnyAsync(e => e.Cnpj == dto.Cnpj);
+
+            if(cnpjExiste)
+                throw new Exception("Já existe uma empresa com este CNPJ.");
+        }
+
         empresa.Cnpj = dto.Cnpj;
         empresa.NomeFantasia = dto.NomeFantasia;
         empresa.Cep = dto.Cep;
@@ -91,5 +105,51 @@ public class EmpresaService : IEmpresaService
         await _context.SaveChangesAsync();
 
         return true;
+    }
+
+    public async Task<bool> VincularFornecedoresAsync(int empresaId, List<int> fornecedoresIds)
+    {
+        var empresa = await _context.Empresas
+            .Include(e => e.EmpresasFornecedores)
+            .FirstOrDefaultAsync(e => e.Id == empresaId);
+
+        if(empresa == null)
+            return false;
+
+        var fornecedoresExistentes = await _context.Fornecedores
+            .Where(f => fornecedoresIds.Contains(f.Id))
+            .Select(f => f.Id)
+            .ToListAsync();
+
+        foreach(var fornecedorId in fornecedoresExistentes)
+        {
+            var jaVinculado = empresa.EmpresasFornecedores
+                .Any(ef => ef.FornecedorId == fornecedorId);
+
+            if(!jaVinculado)
+            {
+                empresa.EmpresasFornecedores.Add(new EmpresaFornecedor
+                {
+                    EmpresaId = empresaId,
+                    FornecedorId = fornecedorId
+                });
+            }
+        }
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
+    public async Task<List<int>> GetFornecedoresIdsByEmpresaAsync(int empresaId)
+    {
+        var empresa = await _context.Empresas
+            .Include(e => e.EmpresasFornecedores)
+            .FirstOrDefaultAsync(e => e.Id == empresaId);
+
+        if(empresa == null)
+            return new List<int>();
+
+        return empresa.EmpresasFornecedores
+            .Select(ef => ef.FornecedorId)
+            .ToList();
     }
 }

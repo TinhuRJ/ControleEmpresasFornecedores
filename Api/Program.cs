@@ -1,4 +1,5 @@
 using ControleEmpresasFornecedores.Api.Data;
+using ControleEmpresasFornecedores.Api.Mappings;
 using ControleEmpresasFornecedores.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddScoped<IEmpresaService, EmpresaService>();
+builder.Services.AddScoped<IFornecedorService, FornecedorService>();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

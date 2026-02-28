@@ -15,11 +15,11 @@ public class Fornecedor
 
     public string Cep { get; set; } = string.Empty;
 
+    public bool PessoaFisica { get; set; }
+
     public string? Rg { get; set; }
 
-    public DateTime? DataNascimento { get; set; }
-
-    public bool PessoaFisica { get; set; }
+    public DateTime? DataNascimento { get; set; }    
 
     public ICollection<EmpresaFornecedor> EmpresasFornecedores { get; set; } = new List<EmpresaFornecedor>();
 }
