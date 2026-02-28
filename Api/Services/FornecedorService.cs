@@ -2,17 +2,20 @@
 using ControleEmpresasFornecedores.Api.Data;
 using ControleEmpresasFornecedores.Api.DTOs;
 using ControleEmpresasFornecedores.Api.Entities;
+using ControleEmpresasFornecedores.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 public class FornecedorService : IFornecedorService
 {
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ICepService _cepService;
 
-    public FornecedorService(AppDbContext context, IMapper mapper)
+    public FornecedorService(AppDbContext context, IMapper mapper, ICepService cepService)
     {
         _context = context;
         _mapper = mapper;
+        _cepService = cepService;
     }
 
     public async Task<List<FornecedorResponseDto>> GetAllAsync(string? nome, string? cpfCnpj)
@@ -67,6 +70,11 @@ public class FornecedorService : IFornecedorService
             }
         }
 
+        var cepValido = await _cepService.CepValidoAsync(dto.Cep);
+
+        if(!cepValido)
+            throw new Exception("CEP inválido.");
+
         var fornecedor = _mapper.Map<Fornecedor>(dto);
 
         var documentoExiste = await _context.Fornecedores.AnyAsync(f => f.Documento == dto.Documento);
@@ -94,6 +102,14 @@ public class FornecedorService : IFornecedorService
             if(documentoExiste)
                 throw new Exception("Já existe um fornecedor com este CPF/CNPJ.");
         }
+
+        if(fornecedor.Cep != dto.Cep) 
+        {
+            var cepValido = await _cepService.CepValidoAsync(dto.Cep);
+
+            if(!cepValido)
+                throw new Exception("CEP inválido.");
+        }            
 
         _mapper.Map(dto, fornecedor);
 
