@@ -1,0 +1,89 @@
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+    <h2 style="margin:0;">Empresas</h2>
+  
+    <div style="display:flex; gap: .5rem; align-items:center;">
+        <input
+            #txt
+            pInputText
+            type="text"
+            placeholder="Buscar..."
+            (input)="dt.filterGlobal(txt.value, 'contains')"
+            />
+      <button pButton label="Nova Empresa" icon="pi pi-plus" (click)="openCreate()"></button>
+    </div>
+  </div>
+  
+  <p-table
+    #dt
+    [value]="(empresas$ | async) ?? []"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[5,10,20]"
+    [globalFilterFields]="['cnpj','nomeFantasia','cep']"
+    [tableStyle]="{'min-width':'60rem'}"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+        <th pSortableColumn="cnpj">CNPJ <p-sortIcon field="cnpj"></p-sortIcon></th>
+        <th pSortableColumn="nomeFantasia">Nome Fantasia <p-sortIcon field="nomeFantasia"></p-sortIcon></th>
+        <th pSortableColumn="cep">CEP <p-sortIcon field="cep"></p-sortIcon></th>
+        <th style="width: 140px;">Ações</th>
+      </tr>
+    </ng-template>
+  
+    <ng-template pTemplate="body" let-empresa>
+      <tr>
+        <td>{{ empresa.id }}</td>
+        <td>{{ empresa.cnpj }}</td>
+        <td>{{ empresa.nomeFantasia }}</td>
+        <td>{{ empresa.cep }}</td>
+        <td style="display:flex; gap:.5rem;">
+            <button pButton icon="pi pi-pencil" severity="secondary" rounded (click)="openEdit(empresa)"></button>
+            <button pButton icon="pi pi-trash" severity="danger" rounded (click)="remove(empresa)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5">Nenhuma empresa encontrada.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-dialog
+  header="Nova Empresa"
+  [(visible)]="showDialog"
+  [modal]="true"
+  [style]="{ width: '520px' }"
+  (onHide)="closeDialog()"
+>
+  <div style="display:flex; flex-direction:column; gap: 1rem;">
+    <div>
+      <label style="display:block; margin-bottom:.25rem;">CNPJ</label>
+      <input pInputText type="text" [(ngModel)]="form.cnpj" placeholder="Somente números" />
+      <small *ngIf="form.cnpj && (form.cnpj.replace(/\\D/g,'').length !== 14)" style="color:#d32f2f;">
+        CNPJ deve ter 14 dígitos.
+      </small>
+    </div>
+
+    <div>
+      <label style="display:block; margin-bottom:.25rem;">Nome Fantasia</label>
+      <input pInputText type="text" [(ngModel)]="form.nomeFantasia" />
+    </div>
+
+    <div>
+      <label style="display:block; margin-bottom:.25rem;">CEP</label>
+      <input pInputText type="text" [(ngModel)]="form.cep" placeholder="Somente números" />
+      <small *ngIf="form.cep && (form.cep.replace(/\\D/g,'').length !== 8)" style="color:#d32f2f;">
+        CEP deve ter 8 dígitos.
+      </small>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button pButton label="Cancelar" severity="secondary" (click)="closeDialog()" [disabled]="saving"></button>
+    <button pButton label="Salvar" icon="pi pi-check" (click)="save()" [disabled]="!isFormValid() || saving"></button>
+  </ng-template>
+</p-dialog>

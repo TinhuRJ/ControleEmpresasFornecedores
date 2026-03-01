@@ -70,4 +70,4 @@ C:\Users\victo\source\repos\ControleEmpresasFornecedores\Api\bin\Debug\net6.0\ru
 C:\Users\victo\source\repos\ControleEmpresasFornecedores\Api\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
 C:\Users\victo\source\repos\ControleEmpresasFornecedores\Api\bin\Debug\net6.0\AutoMapper.dll
 C:\Users\victo\source\repos\ControleEmpresasFornecedores\Api\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
-C:\Users\victo\source\repos\ControleEmpresasFornecedores\Api\obj\Debug\net6.0\ControleEmpresasFornecedores.Api.csproj.CopyComplete
+C:\Users\victo\source\repos\ControleEmpresasFornecedores\Api\obj\Debug\net6.0\Controle.90501B13.Up2Date

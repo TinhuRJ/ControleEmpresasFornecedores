@@ -1,18 +1,8 @@
 [
   {
     "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.EmpresasController",
-    "Method": "Get",
-    "RelativePath": "api/Empresas",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.EmpresasController",
     "Method": "Post",
-    "RelativePath": "api/Empresas",
+    "RelativePath": "api/Empresas/CreateEmpresa",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -27,8 +17,24 @@
   },
   {
     "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.EmpresasController",
+    "Method": "Delete",
+    "RelativePath": "api/Empresas/DeleteEmpresa/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.EmpresasController",
     "Method": "GetById",
-    "RelativePath": "api/Empresas/{id}",
+    "RelativePath": "api/Empresas/GetEmpresa/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -43,8 +49,44 @@
   },
   {
     "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.EmpresasController",
+    "Method": "Get",
+    "RelativePath": "api/Empresas/GetEmpresas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.EmpresasController",
+    "Method": "GetFornecedoresIdsByEmpresa",
+    "RelativePath": "api/Empresas/GetFornecedoresIdsByEmpresa/{empresaId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "empresaId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.EmpresasController",
     "Method": "Put",
-    "RelativePath": "api/Empresas/{id}",
+    "RelativePath": "api/Empresas/UpdateEmpresa/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -64,8 +106,50 @@
   },
   {
     "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.EmpresasController",
+    "Method": "VincularFornecedores",
+    "RelativePath": "api/Empresas/VincularFornecedores",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "VincularFornecedoresDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.FornecedorController",
+    "Method": "Create",
+    "RelativePath": "api/Fornecedor/CreateFornecedor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "ControleEmpresasFornecedores.Api.DTOs.FornecedorCreateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ControleEmpresasFornecedores.Api.DTOs.FornecedorResponseDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.FornecedorController",
     "Method": "Delete",
-    "RelativePath": "api/Empresas/{id}",
+    "RelativePath": "api/Fornecedor/DeleteFornecedor/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -73,6 +157,84 @@
       {
         "Name": "id",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.FornecedorController",
+    "Method": "GetById",
+    "RelativePath": "api/Fornecedor/GetFornecedorById/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "ControleEmpresasFornecedores.Api.DTOs.FornecedorResponseDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.FornecedorController",
+    "Method": "GetAll",
+    "RelativePath": "api/Fornecedor/GetFornecedores",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "nome",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "documento",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[ControleEmpresasFornecedores.Api.DTOs.FornecedorResponseDto, ControleEmpresasFornecedores.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.FornecedorController",
+    "Method": "Update",
+    "RelativePath": "api/Fornecedor/UpdateFornecedor/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "ControleEmpresasFornecedores.Api.DTOs.FornecedorCreateDto",
         "IsRequired": true
       }
     ],
