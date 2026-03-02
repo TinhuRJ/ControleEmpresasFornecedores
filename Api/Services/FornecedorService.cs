@@ -21,8 +21,7 @@ public class FornecedorService : IFornecedorService
     public async Task<List<FornecedorResponseDto>> GetAllAsync(string? nome, string? cpfCnpj)
     {
         var query = _context.Fornecedores
-            .Include(f => f.EmpresasFornecedores)
-            .ThenInclude(ef => ef.Empresa)
+            .AsNoTracking()
             .AsQueryable();
 
         if(!string.IsNullOrWhiteSpace(nome))
@@ -31,9 +30,20 @@ public class FornecedorService : IFornecedorService
         if(!string.IsNullOrWhiteSpace(cpfCnpj))
             query = query.Where(f => f.Documento.Contains(cpfCnpj));
 
-        var fornecedores = await query.ToListAsync();
-
-        return _mapper.Map<List<FornecedorResponseDto>>(fornecedores);
+        return await query
+            .Select(f => new FornecedorResponseDto
+            {
+                Id = f.Id,
+                Nome = f.Nome,
+                Documento = f.Documento,
+                Email = f.Email,
+                Cep = f.Cep,
+                PessoaFisica = f.PessoaFisica,                
+                EmpresasCount = f.EmpresasFornecedores.Count(),                
+                Rg = f.Rg,
+                DataNascimento = f.DataNascimento
+            })
+            .ToListAsync();
     }
 
     public async Task<FornecedorResponseDto?> GetByIdAsync(int id)
@@ -131,15 +141,58 @@ public class FornecedorService : IFornecedorService
     }
     public async Task<List<int>> GetEmpresasIdsByFornecedorAsync(int fornecedorId)
     {
-        var fornecedor = await _context.Fornecedores
-            .Include(f => f.EmpresasFornecedores)
-            .FirstOrDefaultAsync(f => f.Id == fornecedorId);
+        return await _context.EmpresasFornecedores
+            .AsNoTracking()
+            .Where(x => x.FornecedorId == fornecedorId)
+            .Select(x => x.EmpresaId)
+            .ToListAsync();
+    }
 
-        if(fornecedor == null)
-            return new List<int>();
+    public async Task<int?> VincularEmpresasAoFornecedorAsync(int fornecedorId, List<int> empresasIds)
+    {        
+        var fornecedorExiste = await _context.Fornecedores.AnyAsync(f => f.Id == fornecedorId);
+        if(!fornecedorExiste) return null;
 
-        return fornecedor.EmpresasFornecedores
-            .Select(ef => ef.EmpresaId)
-            .ToList();
+        empresasIds ??= new List<int>();
+                
+        var empresasValidas = await _context.Empresas
+            .Where(e => empresasIds.Contains(e.Id))
+            .Select(e => e.Id)
+            .ToListAsync();
+
+        var atuais = await _context.EmpresasFornecedores
+            .Where(x => x.FornecedorId == fornecedorId)
+            .Select(x => x.EmpresaId)
+            .ToListAsync();
+
+        var atuaisSet = atuais.ToHashSet();
+
+        var paraAdicionar = empresasValidas.Where(id => !atuaisSet.Contains(id)).ToList();
+        var paraRemover = atuais.Where(id => !empresasValidas.Contains(id)).ToList();
+
+        if(paraRemover.Count > 0)
+        {
+            var linksRemover = await _context.EmpresasFornecedores
+                .Where(x => x.FornecedorId == fornecedorId && paraRemover.Contains(x.EmpresaId))
+                .ToListAsync();
+
+            _context.EmpresasFornecedores.RemoveRange(linksRemover);
+        }
+
+        foreach(var empresaId in paraAdicionar)
+        {
+            _context.EmpresasFornecedores.Add(new EmpresaFornecedor
+            {
+                EmpresaId = empresaId,
+                FornecedorId = fornecedorId
+            });
+        }
+
+        await _context.SaveChangesAsync();
+                
+        var count = await _context.EmpresasFornecedores
+            .CountAsync(x => x.FornecedorId == fornecedorId);
+
+        return count;
     }
 }

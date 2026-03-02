@@ -8,4 +8,5 @@ public interface IFornecedorService
     Task<bool> UpdateAsync(int id, FornecedorCreateDto dto);
     Task<bool> DeleteAsync(int id);
     Task<List<int>> GetEmpresasIdsByFornecedorAsync(int fornecedorId);
+    Task<int?> VincularEmpresasAoFornecedorAsync(int fornecedorId, List<int> empresasIds);
 }

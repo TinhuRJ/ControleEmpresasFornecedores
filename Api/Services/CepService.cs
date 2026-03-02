@@ -24,7 +24,7 @@ public class CepService : ICepService
 
         try
         {
-            var response = await _httpClient.GetAsync($"https://cep.la/{cep}");
+            var response = await _httpClient.GetAsync($"https://cep.la/?cep={cep}");
 
             if(!response.IsSuccessStatusCode)
                 return false;

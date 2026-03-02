@@ -23,7 +23,8 @@ public class EmpresaService : IEmpresaService
                 Cnpj = e.Cnpj,
                 NomeFantasia = e.NomeFantasia,
                 Cep = e.Cep,
-                Estado = e.Estado
+                Estado = e.Estado,
+                FornecedoresCount = e.EmpresasFornecedores.Count()
             })
             .ToListAsync();
     }
@@ -40,7 +41,8 @@ public class EmpresaService : IEmpresaService
             Cnpj = empresa.Cnpj,
             NomeFantasia = empresa.NomeFantasia,
             Cep = empresa.Cep,
-            Estado = empresa.Estado
+            Estado = empresa.Estado,
+            FornecedoresCount = empresa.EmpresasFornecedores.Count()
         };
     }
 
@@ -107,49 +109,57 @@ public class EmpresaService : IEmpresaService
         return true;
     }
 
-    public async Task<bool> VincularFornecedoresAsync(int empresaId, List<int> fornecedoresIds)
+    public async Task<int?> VincularFornecedoresAsync(int empresaId, List<int> fornecedoresIds)
     {
         var empresa = await _context.Empresas
             .Include(e => e.EmpresasFornecedores)
             .FirstOrDefaultAsync(e => e.Id == empresaId);
 
         if(empresa == null)
-            return false;
+            return null;
 
-        var fornecedoresExistentes = await _context.Fornecedores
+        fornecedoresIds ??= new List<int>();
+
+        // mantém só IDs válidos (existentes)
+        var fornecedoresValidos = await _context.Fornecedores
             .Where(f => fornecedoresIds.Contains(f.Id))
             .Select(f => f.Id)
             .ToListAsync();
 
-        foreach(var fornecedorId in fornecedoresExistentes)
-        {
-            var jaVinculado = empresa.EmpresasFornecedores
-                .Any(ef => ef.FornecedorId == fornecedorId);
+        var atuais = empresa.EmpresasFornecedores.Select(x => x.FornecedorId).ToHashSet();
 
-            if(!jaVinculado)
+        var paraAdicionar = fornecedoresValidos.Where(id => !atuais.Contains(id)).ToList();
+        var paraRemover = atuais.Where(id => !fornecedoresValidos.Contains(id)).ToList();
+
+        if(paraRemover.Count > 0)
+        {
+            var remove = empresa.EmpresasFornecedores.Where(x => paraRemover.Contains(x.FornecedorId)).ToList();
+
+            foreach(var item in remove)
             {
-                empresa.EmpresasFornecedores.Add(new EmpresaFornecedor
-                {
-                    EmpresaId = empresaId,
-                    FornecedorId = fornecedorId
-                });
+                empresa.EmpresasFornecedores.Remove(item);
             }
         }
 
+        foreach(var fornecedorId in paraAdicionar)
+        {
+            empresa.EmpresasFornecedores.Add(new EmpresaFornecedor
+            {
+                EmpresaId = empresaId,
+                FornecedorId = fornecedorId
+            });
+        }
+
         await _context.SaveChangesAsync();
-        return true;
+
+        return empresa.EmpresasFornecedores.Count;
     }
     public async Task<List<int>> GetFornecedoresIdsByEmpresaAsync(int empresaId)
     {
-        var empresa = await _context.Empresas
-            .Include(e => e.EmpresasFornecedores)
-            .FirstOrDefaultAsync(e => e.Id == empresaId);
-
-        if(empresa == null)
-            return new List<int>();
-
-        return empresa.EmpresasFornecedores
-            .Select(ef => ef.FornecedorId)
-            .ToList();
+        return await _context.EmpresasFornecedores
+            .AsNoTracking()
+            .Where(x => x.EmpresaId == empresaId)
+            .Select(x => x.FornecedorId)
+            .ToListAsync();
     }
 }

@@ -28,6 +28,7 @@
         <th pSortableColumn="cnpj">CNPJ <p-sortIcon field="cnpj"></p-sortIcon></th>
         <th pSortableColumn="nomeFantasia">Nome Fantasia <p-sortIcon field="nomeFantasia"></p-sortIcon></th>
         <th pSortableColumn="cep">CEP <p-sortIcon field="cep"></p-sortIcon></th>
+        <th>Quantidade Fornecedores</th>
         <th style="width: 140px;">Ações</th>
       </tr>
     </ng-template>
@@ -38,9 +39,11 @@
         <td>{{ empresa.cnpj }}</td>
         <td>{{ empresa.nomeFantasia }}</td>
         <td>{{ empresa.cep }}</td>
+        <td>{{ empresa.fornecedoresCount ?? 0 }}</td>
         <td style="display:flex; gap:.5rem;">
+            <button pButton icon="pi pi-users" severity="info" rounded (click)="openVinculos(empresa.id)"></button>
             <button pButton icon="pi pi-pencil" severity="secondary" rounded (click)="openEdit(empresa)"></button>
-            <button pButton icon="pi pi-trash" severity="danger" rounded (click)="remove(empresa)"></button>
+            <button pButton icon="pi pi-trash" severity="danger" rounded (click)="remove(empresa)"></button>            
         </td>
       </tr>
     </ng-template>
@@ -85,5 +88,48 @@
   <ng-template pTemplate="footer">
     <button pButton label="Cancelar" severity="secondary" (click)="closeDialog()" [disabled]="saving"></button>
     <button pButton label="Salvar" icon="pi pi-check" (click)="save()" [disabled]="!isFormValid() || saving"></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="Vincular Fornecedores"
+  [(visible)]="showVinculoDialog"
+  [modal]="true"
+  [style]="{ width: '820px', maxWidth: '95vw' }"
+  [contentStyle]="{ height: '420px', overflow: 'auto' }"
+  (onHide)="closeVinculoDialog()"
+>
+  <div *ngIf="loadingVinculo">
+    Carregando...
+  </div>
+
+  <div *ngIf="!loadingVinculo" style="display:flex; flex-direction:column; gap:1rem;">
+    <p-multiSelect
+      [options]="fornecedoresTodos"
+      optionLabel="nome"
+      optionValue="id"
+      [(ngModel)]="fornecedorSelecionadosIds"
+      [filter]="true"
+      defaultLabel="Selecione fornecedores"
+      [style]="{ width: '100%' }"
+    >
+    </p-multiSelect>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      label="Cancelar"
+      severity="secondary"
+      (click)="closeVinculoDialog()"
+    ></button>
+
+    <button
+      pButton
+      label="Salvar"
+      icon="pi pi-check"
+      (click)="saveVinculos()"
+      [disabled]="savingVinculo"
+    ></button>
   </ng-template>
 </p-dialog>

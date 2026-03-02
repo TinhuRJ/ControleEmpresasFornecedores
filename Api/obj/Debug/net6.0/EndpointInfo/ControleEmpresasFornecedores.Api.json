@@ -425,6 +425,89 @@
           }
         }
       }
+    },
+    "/api/Fornecedor/GetEmpresasIdsByFornecedor/{fornecedorId}": {
+      "get": {
+        "tags": [
+          "Fornecedor"
+        ],
+        "parameters": [
+          {
+            "name": "fornecedorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Fornecedor/VincularEmpresasAoFornecedor": {
+      "post": {
+        "tags": [
+          "Fornecedor"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VincularEmpresasDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VincularEmpresasDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/VincularEmpresasDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -506,6 +589,37 @@
           },
           "pessoaFisica": {
             "type": "boolean"
+          },
+          "empresasCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rg": {
+            "type": "string",
+            "nullable": true
+          },
+          "dataNascimento": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "VincularEmpresasDto": {
+        "type": "object",
+        "properties": {
+          "fornecedorId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "empresasIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false

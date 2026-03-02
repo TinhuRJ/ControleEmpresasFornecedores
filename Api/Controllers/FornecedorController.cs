@@ -63,4 +63,19 @@ public class FornecedorController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("GetEmpresasIdsByFornecedor/{fornecedorId}")]
+    public async Task<ActionResult<List<int>>> GetEmpresasIdsByFornecedor(int fornecedorId)
+    {
+        var ids = await _service.GetEmpresasIdsByFornecedorAsync(fornecedorId);
+        return Ok(ids); // sempre 200 com lista (vazia ok)
+    }
+
+    [HttpPost("VincularEmpresasAoFornecedor")]
+    public async Task<IActionResult> VincularEmpresasAoFornecedor([FromBody] VincularEmpresasDto dto)
+    {
+        var count = await _service.VincularEmpresasAoFornecedorAsync(dto.FornecedorId, dto.EmpresasIds);
+        if(count == null) return NotFound("Fornecedor não encontrado.");
+        return Ok(count.Value);
+    }
 }

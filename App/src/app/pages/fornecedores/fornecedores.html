@@ -1,0 +1,162 @@
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+    <h2 style="margin:0;">Fornecedores</h2>
+  
+    <button pButton label="Novo Fornecedor" icon="pi pi-plus" (click)="openCreate()"></button>
+  </div>
+  
+  <div style="display:flex; gap:.5rem; margin-bottom:1rem; align-items:center;">
+    <input pInputText placeholder="Nome" [(ngModel)]="filtroNome" />
+    <input pInputText placeholder="CPF/CNPJ" [(ngModel)]="filtroDocumento" />
+  
+    <button pButton label="Buscar" icon="pi pi-search" (click)="buscar()"></button>
+    <button pButton label="Limpar" severity="secondary" (click)="limparFiltros()"></button>
+  </div>
+  
+  <p-table
+    [value]="(fornecedores$ | async) ?? []"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[5,10,20]"
+    [tableStyle]="{'min-width':'75rem'}"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Documento</th>
+        <th>Nome</th>
+        <th>E-mail</th>
+        <th>CEP</th>
+        <th>PF?</th>
+  
+        <!-- Opcional: mostrar contagem de empresas vinculadas -->
+        <th>Qtd. Empresas</th>
+  
+        <th style="width:180px;">Ações</th>
+      </tr>
+    </ng-template>
+  
+    <ng-template pTemplate="body" let-f>
+      <tr>
+        <td>{{ f.id }}</td>
+        <td>{{ f.documento }}</td>
+        <td>{{ f.nome }}</td>
+        <td>{{ f.email }}</td>
+        <td>{{ f.cep }}</td>
+        <td>{{ f.pessoaFisica ? 'Sim' : 'Não' }}</td>
+        <td>{{ f.empresasCount ?? 0 }}</td>
+        <td style="display:flex; gap:.5rem;">
+          <button
+            pButton
+            icon="pi pi-building"
+            severity="info"
+            rounded
+            (click)="openVinculosEmpresas(f.id)"
+            title="Vincular empresas"
+          ></button>
+          <button pButton icon="pi pi-pencil" severity="secondary" rounded (click)="openEdit(f)"></button>
+          <button pButton icon="pi pi-trash" severity="danger" rounded (click)="remove(f)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8">Nenhum fornecedor encontrado.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+  
+  <p-dialog
+    [header]="editingId ? 'Editar Fornecedor' : 'Novo Fornecedor'"
+    [(visible)]="showDialog"
+    [modal]="true"
+    [style]="{ width: '560px' }"
+  >
+    <div style="display:flex; flex-direction:column; gap: 1rem;">
+      <div>
+        <label style="display:block; margin-bottom:.25rem;">Nome</label>
+        <input pInputText [(ngModel)]="form.nome"/>
+      </div>
+  
+      <div>
+        <label style="display:block; margin-bottom:.25rem;">CPF/CNPJ</label>
+        <input pInputText [(ngModel)]="form.documento"/>
+      </div>
+  
+      <div>
+        <label style="display:block; margin-bottom:.25rem;">E-mail</label>
+        <input pInputText [(ngModel)]="form.email"/>
+      </div>
+  
+      <div>
+        <label style="display:block; margin-bottom:.25rem;">CEP</label>
+        <input pInputText [(ngModel)]="form.cep"/>
+      </div>
+  
+      <div style="display:flex; align-items:center; gap:.5rem;">
+        <p-checkbox [(ngModel)]="form.pessoaFisica" [binary]="true"></p-checkbox>
+        <span>Pessoa Física</span>
+      </div>
+  
+      <div *ngIf="form.pessoaFisica" style="display:flex; gap:.75rem;">
+        <div style="flex:1;">
+          <label style="display:block; margin-bottom:.25rem;">RG</label>
+          <input pInputText [(ngModel)]="form.rg"/>
+        </div>
+  
+        <div style="flex:1;">
+          <label style="display:block; margin-bottom:.25rem;">Data Nascimento</label>
+          <input pInputText type="date" [(ngModel)]="form.dataNascimento"/>
+        </div>
+      </div>
+    </div>
+  
+    <ng-template pTemplate="footer">
+      <button pButton label="Cancelar" severity="secondary" (click)="closeDialog()"></button>
+      <button pButton label="Salvar" icon="pi pi-check" (click)="save()"></button>
+    </ng-template>
+  </p-dialog>
+    
+  <p-dialog
+    header="Vincular Empresas"
+    [(visible)]="showVinculoDialog"
+    [modal]="true"
+    [style]="{ width: '820px', maxWidth: '95vw' }"
+    [contentStyle]="{ height: '420px', overflow: 'auto' }"
+    (onHide)="closeVinculosEmpresas()"
+  >
+    <div *ngIf="loadingVinculo">
+      Carregando...
+    </div>
+  
+    <div *ngIf="!loadingVinculo" style="display:flex; flex-direction:column; gap:1rem;">
+      <p-multiSelect
+        [options]="empresasTodas"
+        optionLabel="nomeFantasia"
+        optionValue="id"
+        [(ngModel)]="empresasSelecionadasIds"
+        [filter]="true"
+        defaultLabel="Selecione empresas"
+        [style]="{ width: '100%' }"
+      >
+      </p-multiSelect>
+    </div>
+  
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        label="Cancelar"
+        severity="secondary"
+        (click)="closeVinculosEmpresas()"
+        [disabled]="savingVinculo"
+      ></button>
+  
+      <button
+        pButton
+        label="Salvar"
+        icon="pi pi-check"
+        (click)="saveVinculosEmpresas()"
+        [disabled]="savingVinculo"
+      ></button>
+    </ng-template>
+  </p-dialog>

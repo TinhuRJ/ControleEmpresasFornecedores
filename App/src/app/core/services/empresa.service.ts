@@ -26,8 +26,21 @@ export class EmpresaService {
   updateEmpresa(id: number, payload: EmpresaCreate): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/UpdateEmpresa/${id}`, payload);
   }
-  
+
   deleteEmpresa(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/DeleteEmpresa/${id}`);
+  }
+
+  getFornecedoresIdsByEmpresa(empresaId: number): Observable<number[]> {
+    return this.http.get<number[]>(
+      `${this.apiUrl}/GetFornecedoresIdsByEmpresa/${empresaId}`
+    );
+  }
+  
+  vincularFornecedores(empresaId: number, ids: number[]): Observable<number> {
+    return this.http.post<number>(`${this.apiUrl}/VincularFornecedores`, {
+      empresaId,
+      fornecedoresIds: ids
+    });
   }
 }

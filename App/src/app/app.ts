@@ -2,10 +2,11 @@ import { Component, signal, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { EmpresaService } from './core/services/empresa.service';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ButtonModule],
+  imports: [RouterOutlet, ButtonModule, ToastModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

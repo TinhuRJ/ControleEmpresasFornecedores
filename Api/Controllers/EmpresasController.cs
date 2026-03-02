@@ -60,24 +60,21 @@ public class EmpresasController : ControllerBase
     }
 
     [HttpPost("VincularFornecedores")]
-    public async Task<IActionResult> VincularFornecedores(VincularFornecedoresDto dto)
+    public async Task<IActionResult> VincularFornecedores([FromBody] VincularFornecedoresDto dto)
     {
-        var result = await _service.VincularFornecedoresAsync(dto.EmpresaId, dto.FornecedoresIds);
+        var count = await _service.VincularFornecedoresAsync(dto.EmpresaId, dto.FornecedoresIds);
 
-        if(!result)
+        // se você mudar o service pra retornar int? (recomendado)
+        if(count == null)
             return NotFound("Empresa não encontrada.");
 
-        return NoContent();
+        return Ok(count.Value);
     }
 
     [HttpGet("GetFornecedoresIdsByEmpresa/{empresaId}")]
     public async Task<ActionResult<List<int>>> GetFornecedoresIdsByEmpresa(int empresaId)
     {
         var fornecedoresIds = await _service.GetFornecedoresIdsByEmpresaAsync(empresaId);
-
-        if(fornecedoresIds == null || !fornecedoresIds.Any())
-            return NotFound("Nenhum fornecedor vinculado.");
-
-        return Ok(fornecedoresIds);
+        return Ok(fornecedoresIds ?? new List<int>());
     }
 }

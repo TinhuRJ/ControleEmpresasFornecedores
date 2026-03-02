@@ -164,6 +164,32 @@
   },
   {
     "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.FornecedorController",
+    "Method": "GetEmpresasIdsByFornecedor",
+    "RelativePath": "api/Fornecedor/GetEmpresasIdsByFornecedor/{fornecedorId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fornecedorId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[System.Int32, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.FornecedorController",
     "Method": "GetById",
     "RelativePath": "api/Fornecedor/GetFornecedorById/{id}",
     "HttpMethod": "GET",
@@ -235,6 +261,22 @@
       {
         "Name": "dto",
         "Type": "ControleEmpresasFornecedores.Api.DTOs.FornecedorCreateDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ControleEmpresasFornecedores.Api.Controllers.FornecedorController",
+    "Method": "VincularEmpresasAoFornecedor",
+    "RelativePath": "api/Fornecedor/VincularEmpresasAoFornecedor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "ControleEmpresasFornecedores.Api.DTOs.VincularEmpresasDto",
         "IsRequired": true
       }
     ],

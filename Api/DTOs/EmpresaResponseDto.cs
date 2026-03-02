@@ -7,4 +7,5 @@ public class EmpresaResponseDto
     public string NomeFantasia { get; set; } = string.Empty;
     public string Cep { get; set; } = string.Empty;
     public string Estado { get; set; } = string.Empty;
+    public int FornecedoresCount { get; set; }
 }
